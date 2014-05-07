@@ -5,22 +5,9 @@ __all__ = ['AssertHTMLMixin']
 
 
 class AssertHTMLMixin(object):
-    def assertHTML(self, response,
-                   selector=None, element_id=None,
-                   expected=None,
-                   status_code=200,
-                   msg=None):
-
-        context = AssertHTMLContext(
-            response,
-            test_case=self,
-            selector=selector,
-            element_id=element_id,
-            status_code=status_code,
-            msg=msg
-        )
-
-        return context
+    def assertHTML(self, *args, **kwargs):
+        kwargs['test_case'] = self
+        return AssertHTMLContext(*args, **kwargs)
 
     def assertNotHTML(self, *args, **kwargs):
         try:
