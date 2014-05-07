@@ -1,6 +1,7 @@
 from django.test import TestCase
 from with_asserts.case import TestCase as HTMLTestCase
 from with_asserts.mixin import AssertHTMLMixin
+from with_asserts.context_manager import assertHTML
 
 import lxml.html
 
@@ -142,6 +143,13 @@ class HTMLTestCaseTest(HTMLTestCase):
             self.assertIsInstance(html, lxml.html.HtmlElement)
             self.assertEqual('Selector Test', html.find('head/title').text)
 
+class BareContextManagerTest(TestCase):
+    def test_document(self):
+        resp = self.client.get('/template/selectors/')
+
+        with assertHTML(resp) as html:
+            self.assertIsInstance(html, lxml.html.HtmlElement)
+            self.assertEqual('Selector Test', html.find('head/title').text)
 # TODO:
 # expected_tag
 # expected_attrs

@@ -31,7 +31,10 @@ class AssertHTMLContext(object):
 
     def __enter__(self):
         # Similar to assertContains(), we verify the status code
-        self.test_case.assertEqual(self.response.status_code, self.status_code)
+        if self.test_case is not None:
+            self.test_case.assertEqual(self.response.status_code, self.status_code)
+        else:
+            assert self.response.status_code == self.status_code
 
         # TODO consider validating self.response['Content-Type']
 
@@ -61,3 +64,20 @@ class AssertHTMLContext(object):
 
     def __exit__(self, exc_type, exc_value, tb):
         pass
+
+def assertHTML(response,
+               selector=None, element_id=None,
+               expected=None,
+               status_code=200,
+               msg=None):
+
+    context = AssertHTMLContext(
+        response,
+        test_case=None,
+        selector=selector,
+        element_id=element_id,
+        status_code=status_code,
+        msg=msg
+    )
+
+    return context
